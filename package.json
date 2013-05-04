@@ -1,0 +1,42 @@
+{
+    "name": "osctonode",
+    "description": "node 改造 osc翻译频道",
+    "version": "0.0.1",
+    "homepage": "http://github.com/youxiachai",
+    "author": {
+        "name": "youxiachai",
+        "email": "youxiachai@gmail.com",
+        "url": "http://blog.gfdsa.net"
+    },
+    "contributors": [
+
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/youxiachai"
+    },
+    "dependencies": {
+        "jsdom": "0.6.0",
+        "ejs": "0.8.3",
+        "express": "3.x",
+        "hashmap":"0.9.3"
+    },
+    "engines": {
+        "node": ">= 0.6.13 && < 0.11.0"
+    },
+    "scripts": {
+        "test": "",
+        "install": ""
+    },
+    "licenses": [
+        {
+            "type": "MIT"
+        }
+    ],
+    "main": "",
+    "gypfile": false,
+    "readme": "hello world",
+    "readmeFilename": "README.md",
+    "_id": "",
+    "_from": ""
+}
