@@ -1,6 +1,6 @@
-{
-    "name": "osctonode",
-    "description": "node 改造 osc翻译频道",
+﻿{
+    "name": "nodeScrapeOscTranslationChannel",
+    "description": "node Scrape Osc Translation Channel",
     "version": "0.0.1",
     "homepage": "https://github.com/youxiachai/nodeScrapeOscTranslationChannel",
     "author": {
