@@ -2,7 +2,7 @@
     "name": "osctonode",
     "description": "node 改造 osc翻译频道",
     "version": "0.0.1",
-    "homepage": "http://github.com/youxiachai",
+    "homepage": "https://github.com/youxiachai/nodeScrapeOscTranslationChannel",
     "author": {
         "name": "youxiachai",
         "email": "youxiachai@gmail.com",
@@ -13,7 +13,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git://github.com/youxiachai"
+        "url": "git@github.com:youxiachai/nodeScrapeOscTranslationChannel.git"
     },
     "dependencies": {
         "jsdom": "0.6.0",
