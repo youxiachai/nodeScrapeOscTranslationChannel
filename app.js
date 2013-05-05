@@ -11,7 +11,9 @@ var express = require('express')
     , path = require('path');
 
 var app = express();
-
+var mkdirp = require('mkdirp');
+var downloader = require('downloader');
+var pathUtil = require('path');
 //配置
 app.configure(function () {
     app.set('port', process.env.PORT || 3000);
@@ -44,19 +46,19 @@ var ipMap = new HashMap();
 var listcontent = "";
 var listUrl = "http://www.oschina.net/translate/list?type=2";
 //记录ip访问
-var ipLog = function(ipString, fileName){
+var ipLog = function (ipString, fileName) {
     console.log(ipMap.get(ipString));
     var mapIp = ipMap.get(ipString);
 
-    if(mapIp === undefined){
+    if (mapIp === undefined) {
         ipMap.set(ipString, 0);
-        console.log("set "+ ipString + "index" + ipMap.get(ipString));
-        fs.appendFile(fileName, ipString + '\n', function(err){
-            if(err) return err;
+        console.log("set " + ipString + "index" + ipMap.get(ipString));
+        fs.appendFile(fileName, ipString + '\n', function (err) {
+            if (err) return err;
             console.log('ok');
         });
-    }else{
-        ipMap.set(ipString, ipMap.get(ipString)+1);
+    } else {
+        ipMap.set(ipString, ipMap.get(ipString) + 1);
     }
 }
 
@@ -64,7 +66,7 @@ var ipLog = function(ipString, fileName){
 app.get('/', function (req, res) {
     //获取访问ip
     var clientIp = req.connection.remoteAddress
-    ipLog('list: '+clientIp, './listip');
+    ipLog('list: ' + clientIp, './listip');
 
     //如果列表没有生成的话,对列表进行生成
     if (listcontent === "") {
@@ -132,17 +134,17 @@ app.get('/translate/:title', function (req, res) {
     var pageTitle = req.params.title;
 
     var clientIp = req.connection.remoteAddress
-    ipLog(pageTitle+': '+clientIp, './page.txt');
-        //http://www.oschina.net/translate/optimize-requirejs-projects
-    var url = "http://www.oschina.net/translate/"+pageTitle;
+    ipLog(pageTitle + ': ' + clientIp, './page.txt');
+    //http://www.oschina.net/translate/optimize-requirejs-projects
+    var url = "http://www.oschina.net/translate/" + pageTitle;
     console.log("key->" + pageTitle);
     var article = map.get(pageTitle);
-    if(!article){
+    if (!article) {
         console.log("build---");
         jsdom.env({
-            html:url,
-            src:[jquery],
-            done:function(errors, window){
+            html: url,
+            src: [jquery],
+            done: function (errors, window) {
                 //获取分类
                 var $ = window.$;
 //     /  var title = $('#OSC_Banner div.wp998 dl dt:last a:eq(1)')
@@ -153,6 +155,28 @@ app.get('/translate/:title', function (req, res) {
                 //移除翻译者
                 $('td.translater').remove();
                 $('table').addClass("table").addClass("table-striped").addClass("table-bordered").addClass("table-hover");
+
+
+
+                //图片下载
+                $('img').each(function (index, item) {
+                    var imgUrl = $(item).attr('src');
+                    var imagePath = urlUtils.parse(imgUrl);
+                    if (imagePath.host !== null ) {
+                        console.log("dir -->" + __dirname + pathUtil.dirname(imagePath.pathname));
+                        console.log("fiename -->" + pathUtil.basename(imagePath.pathname));
+                        var filename = pathUtil.basename(imagePath.pathname)
+                        var downloadDir = __dirname+ "/public/" + pathUtil.dirname(imagePath.pathname) + "/";
+                        mkdirp(downloadDir, function (err) {
+                            if (err) return;
+                            downloader.download(imgUrl, downloadDir);
+                            console.log("img -->" + JSON.stringify(imagePath));
+                        });
+                        $(item).attr('src', imagePath.pathname);
+                    }
+
+                });
+
                 var contentHtml = "";
                 $('div.Body').each(function (index, item) {
                     var $body = $(item);
@@ -162,22 +186,24 @@ app.get('/translate/:title', function (req, res) {
                     });
                     contentHtml += $body.html();
                 });
-                contentHtml = "<div class='container-fluid content'>"+contentHtml+"</div>"
+
+
+
+                contentHtml = "<div class='container-fluid content'>" + contentHtml + "</div>"
                 window.close();
-                var renderBody =  {title: title, contentHtml: contentHtml};
-                map.set(pageTitle,renderBody);
+                var renderBody = {title: title, contentHtml: contentHtml};
+                map.set(pageTitle, renderBody);
                 res.render('content', renderBody);
             }
 
         });
-    }else{
+    } else {
         console.log("map-> reuse");
         res.render('content', article);
     }
 
 
-
-  //  res.render('content', {title: title})
+    //  res.render('content', {title: title})
     // res.send(req.params.title);
 });
 
