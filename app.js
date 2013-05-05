@@ -32,20 +32,44 @@ var jsdom = require("jsdom");
 var fs = require("fs");
 var urlUtils = require("url");
 var jquery = fs.readFileSync("./jquery.js").toString();
-
+var HashMap = require('hashmap').HashMap;
+var map = new HashMap();
+var ipMap = new HashMap();
 
 //下载测试用list 列表
 //var url = "http://www.oschina.net/translate/list?type=2";
-
-var listFile = fs.readFileSync("./list.html").toString();
+//dom 测试用
+//var listFile = fs.readFileSync("./list.html").toString();
 //路由
 var listcontent = "";
+var listUrl = "http://www.oschina.net/translate/list?type=2";
+//记录ip访问
+var ipLog = function(ipString, fileName){
+    console.log(ipMap.get(ipString));
+    var mapIp = ipMap.get(ipString);
+
+    if(mapIp === undefined){
+        ipMap.set(ipString, 0);
+        console.log("set "+ ipString + "index" + ipMap.get(ipString));
+        fs.appendFile(fileName, ipString + '\n', function(err){
+            if(err) return err;
+            console.log('ok');
+        });
+    }else{
+        ipMap.set(ipString, ipMap.get(ipString)+1);
+    }
+}
+
 //翻译列表
 app.get('/', function (req, res) {
+    //获取访问ip
+    var clientIp = req.connection.remoteAddress
+    ipLog('list: '+clientIp, './listip');
+
     //如果列表没有生成的话,对列表进行生成
     if (listcontent === "") {
         jsdom.env({
-            html: listFile,
+            html: listUrl,
             src: [jquery],
             done: function (errors, window) {
                 var $ = window.$;
@@ -64,7 +88,7 @@ app.get('/', function (req, res) {
 
                     //build Title :li header h2 a
                     //太傻了,可以用replace with 优雅的完成...以后再改吧,佩服自己的傻劲..
-                    var header = $body.find('dt a').attr("href", itemPath).removeAttr("target").unwrap().wrap('<header>').wrap('<h4/>').parent();
+                    var header = $body.find('dt a').attr("href", itemPath).removeAttr("target").unwrap().wrap('<header>').wrap('<h5/>').parent();
 //            console.log("index->" + index + "->"+header.html());
                     //build DateTime : div a
                     var dateTime = $body.find('dd.remark').wrap("<div />").find('a').unwrap().parent();
@@ -102,11 +126,13 @@ app.get('/', function (req, res) {
     }
 
 });
-var HashMap = require('hashmap').HashMap;
-var map = new HashMap();
+
 //翻译具体文章
 app.get('/translate/:title', function (req, res) {
     var pageTitle = req.params.title;
+
+    var clientIp = req.connection.remoteAddress
+    ipLog(pageTitle+': '+clientIp, './page.txt');
         //http://www.oschina.net/translate/optimize-requirejs-projects
     var url = "http://www.oschina.net/translate/"+pageTitle;
     console.log("key->" + pageTitle);
