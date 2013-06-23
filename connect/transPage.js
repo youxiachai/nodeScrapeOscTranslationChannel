@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-var parsePage = require("./parsePage");
+var parsePage = require("osctranslatecrawler");
 //参考
 var tans = function(originDb, key){
     var local = key;
@@ -49,11 +49,20 @@ exports.transList = function(originDb, resultDb){
         });
 };
 
-exports.transContent = function(originDb, resultDb, imageDb){
+var setArticleToDb = function(data, resultDb , imageDb){
+    parsePage.parseArticle(data.value, function (resultHtml, imageArray) {
+        if(imageArray.length){
+            imageDb.put(data.key, imageArray);
+        }
+        resultDb.put(data.key, resultHtml);
+    });
+}
+
+exports.transArticles = function(originDb, resultDb, imageDb){
     //转换文章内容
     originDb.createReadStream()
         .on('data', function (data) {
-            resultDb.put(data.key, parsePage.parseContent(data.value, imageDb));
+            setArticleToDb(data, resultDb, imageDb);
         })
         .on('error', function (err) {
             console.log('Oh my!', err)
@@ -65,12 +74,26 @@ exports.transContent = function(originDb, resultDb, imageDb){
             console.log('Stream end')
         });
 };
-var urlUtils = require("url");
-exports.imageSync = function(imageDb){
+
+
+
+
+var imgDownload = function(imageDb, data, dir, cb) {
+    parsePage.pageImgDownload(data.value, dir, function(err, body){
+        if(err){
+            cb(err, body);
+        }else{
+            cb(null, data.key);
+        }
+    });
+};
+
+exports.imageSync = function(imageDb, dir, cb){
     imageDb.createReadStream()
         .on('data', function (data) {
+            imgDownload(imageDb, data, dir, cb);
             //resultDb.put(data.key, parsePage.parseContent(data.value, imageDb));
-            parsePage.imgDowload(urlUtils.parse(data.value), imageDb);
+          //  parsePage.imgDowload(urlUtils.parse(data.value), imageDb);
         })
         .on('error', function (err) {
             console.log('Oh my!', err)

@@ -7,6 +7,12 @@
 
     <link href="/css/jquery.mobile-1.3.1.min.css" rel="stylesheet">
     <link href="/css/jqm-demos.css" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
+    <!-- page -->
     <script src="/js/jquery-1.9.1.min.js"></script>
     <script src="/js/jquery.mobile-1.3.1.js"></script>
     <style type="text/css">
@@ -14,10 +20,6 @@
             -webkit-transform: translate3d(0, 0, 0);
         }
     </style>
-    <!-- Bootstrap -->
-    <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
-    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="/css/custom.css" rel="stylesheet">
 </head>
 <body>
 
@@ -28,18 +30,16 @@
 
         <div class="ui-panel-inner">
             <div class="panel-content">
-                <h3>Default panel options</h3>
-
-                <p>This panel has all the default options: positioned on the left with the reveal display mode. The
-                    panel markup is <em>before</em> the header, content and footer in the source order.</p>
-
-                <p>To close, click off the panel, swipe left or right, hit the Esc key, or use the button below:</p>
-                <a data-inline="true" data-icon="delete" data-theme="c" data-role="button" data-rel="close"
-                   href="#demo-links" data-corners="true" data-shadow="true" data-iconshadow="true"
-                   data-wrapperels="span"
-                   class="ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-left ui-btn-up-c"><span
-                        class="ui-btn-inner"><span class="ui-btn-text">Close panel</span><span
-                        class="ui-icon ui-icon-delete ui-icon-shadow">&nbsp;</span></span></a>
+                <button type="button" class="close" data-rel="close" data-theme="c">
+                    close
+                </button>
+                <div style="height: 960px;overflow: auto;">
+                    <ul data-role="listview" data-inset="true" data-theme="c">
+                        <% for(var i = 1; i < 87; i++){ %>
+                        <li><a href="/?p=<%= i %>"><%= i %> </a></li>
+                        <% } %>
+                    </ul>
+                </div>
             </div>
         </div>
         <!-- /content wrapper for padding -->
@@ -60,40 +60,51 @@
         <%- listcontent%>
 
     </div>
-    <!-- footer -->
-    <div data-role="footer">
-        <h1>footer</h1>
-    </div>
+
 </div>
-<!-- page -->
+
 
 
 <script type="text/javascript">
-//    $("a").click(function (event) {
+    //    $("a").click(function (event) {
+    //
+    //        window.location = $(this).attr("href") + '?title=' + $(this).attr("title");
+    //       // event.preventDefault();
+    //    });
+    // Define a click binding for all anchors in the page
+    $("a").on("click", function (event) {
+
+//        var title = $(this).attr("title");
 //        event.preventDefault();
-//        window.location = $(this).attr("href") + '?title=' + $(this).attr("title");
-//    });
-// Define a click binding for all anchors in the page
-$( "a" ).on( "click", function( event ){
+//        console.log(title);
+//        //undefined
+//        if (title) {
+//        //    $.mobile.navigate( $(this).attr( "href" )+ '?title=' + title);
+//            window.location = $(this).attr("href") + '?title=' + title;
+//        } else {
+//          //  $.mobile.navigate( $(this).attr( "href" ));
+//            window.location = $(this).attr("href");
+//        }
 
-    // Prevent the usual navigation behavior
-    event.preventDefault();
-  //  console.log($.mobile.phonegapNavigationEnabled);
-    // Alter the url according to the anchor's href attribute, and
-    // store the data-foo attribute information with the url
-    //ajax 导航
-    $.mobile.navigate( $(this).attr( "href" )+ '?title=' + $(this).attr("title"));
 
-    // Hypothetical content alteration based on the url. E.g, make
-    // an AJAX request for JSON data and render a template into the page.
-   // alterContent(  $(this).attr( "href" ) );
-});
-$( window ).on( "navigate", function( event, data ) {
-    console.log( data.state.info );
-    console.log( data.state.direction )
-    console.log( data.state.url )
-    console.log( data.state.hash )
-});
+        // Prevent the usual navigation behavior
+        //  event.preventDefault();
+        //  console.log($.mobile.phonegapNavigationEnabled);
+        // Alter the url according to the anchor's href attribute, and
+        // store the data-foo attribute information with the url
+        //ajax 导航
+        //
+
+        // Hypothetical content alteration based on the url. E.g, make
+        // an AJAX request for JSON data and render a template into the page.
+        // alterContent(  $(this).attr( "href" ) );
+    });
+    //$( window ).on( "navigate", function( event, data ) {
+    //    console.log( data.state.info );
+    //    console.log( data.state.direction )
+    //    console.log( data.state.url )
+    //    console.log( data.state.hash )
+    //});
 </script>
 </body>
 </html>

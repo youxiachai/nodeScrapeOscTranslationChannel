@@ -1,8 +1,10 @@
 ##个人兴趣爱好 用nodejs 转换的一个开源中国 翻译频道 移动浏览版本##
 
+也有在线演示的版本。http://goo.gl/K3Dc8 ***用了google的短网址服务可能有转换慢,或者无法访问的情况***
 
 
-
+##2013/6/24##
+花了一天,又重构了一遍...
 
 
 ##2013/5/26 重构更新##
@@ -33,7 +35,7 @@
 因为这个是完整的开发项目，你clone 下来需要非常的折腾才能运行下来，下面有打包好的win 7 x64平台node v0.10.8 下能够直接运行的版本
 [https://docs.google.com/file/d/0B9hzKjSMF_5vSEptNzNkaEJkSzQ/edit?usp=sharing](https://docs.google.com/file/d/0B9hzKjSMF_5vSEptNzNkaEJkSzQ/edit?usp=sharing)
 
-也有在线演示的版本。http://goo.gl/K3Dc8 ***用了google的短网址服务可能有转换慢,或者无法访问的情况***
+
 
 如果你是linux 用户,把项目 clone 下来 在项目目录下运行
 
